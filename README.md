@@ -115,6 +115,10 @@ show(comps.NK.chr22)
 # we do need to change some names, though!
 names(mcols(comps.mono.chr22))[1] <- "score"
 names(mcols(comps.NK.chr22))[1] <- "score"
+
+# may as well generate a differences track, too:
+comps.diffs <- comps.NK.chr22
+comps.diffs$score <- comps.NK.chr22$score - comps.mono.chr22$score
 ```
 
 Now we can dump the result and compare in, say, IGV (or you could split by compartment and run various tests in R):
@@ -122,7 +126,8 @@ Now we can dump the result and compare in, say, IGV (or you could split by compa
 ```R
 library(rtracklayer)
 export(comps.NK.chr22, "NKcells.compartments.chr22.hg19.bw")
-export(comps.NK.chr22, "Monocytes.compartments.chr22.hg19.bw")
+export(comps.mono.chr22, "Monocytes.compartments.chr22.hg19.bw")
+export(comps.diffs, "NKvsMonocytes.compartmentDiffs.chr22.hg19.bw")
 ```
 
 If it's not obvious how to use this information, I can add another section here.
