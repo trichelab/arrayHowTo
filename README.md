@@ -1,8 +1,12 @@
 # arrayHowTo
 
+<img src="compartments.IGV.png">
+
 This is a step-by-step demo to accompany the Epigenomics Workshop 2018 practicum for DNA methylation microarrays.
 Since the new best practices for Bioconductor include using the BiocManager package, let's begin there.
-If you use Rstudio, now would be a good time to start it up. 
+If you use Rstudio, now would be a good time to start it up.   
+
+We'll go from processing publicly available flow-sorted blood cell data to comparing compartment states by cell types.
 
 ```R
 install.packages("BiocManager")
@@ -152,6 +156,9 @@ closedToOpen <- subsetByOverlaps(openNK, closedMono)
 openingGenes <- subsetByOverlaps(chr22genes, closedToOpen)
 export(openingGenes, "genes.closedInMono.openInNk.chr22.hg19.bed") 
 ```
+
+With a very small amount of fiddling (mostly color-coding the compartments, red for closed and gray for open) in IGV:
+
 <img src="compartments.IGV.png">
 
 A more interesting example might try to add a confidence interval and further restrict the changes of interest to those that go from being "deeply" embedded in heterochromatin (closed) compartments to being broadly open euchromatin.
