@@ -86,7 +86,11 @@ Either way, you get back a GenomicRatioSet (```?GenomicRatioSet``` for more):
 show(grSet)
 ```
 
-Once you have a GenomicRatioSet you can feed it to Conumee, for example (much more on that topic in the conumee package vignette), or call DMRs with, say, DMRcate, or use ```compartments()``` to look at A/B compartment structure:
+Once you have a GenomicRatioSet you can feed it to Conumee, for example (much more on that topic in the conumee package vignette), or call DMRs with, say, DMRcate.
+
+## A/B compartments
+
+If you would like to get some of the information that Hi-C provides, without necessarily burning entire flow cells on each sample, you can use the ```compartments()``` function in ```minfi``` to look at A/B compartment structure:
 
 ```
 # CD14 is a cell surface marker on classical monocytes
