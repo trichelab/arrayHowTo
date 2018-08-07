@@ -132,7 +132,7 @@ export(comps.diffs, "NKvsMonocytes.compartmentDiffs.chr22.hg19.bw")
 
 If it's not obvious how to use this information, I can add another section here.    
 (Or maybe the IDAT files for the TARGET AML NUP98-NSD1 vs. NUP98-KDM5A comparison)    
-One silly example: what genes on chromosome 22 go from being in a "closed" compartment in monocytes to "open" in NK cells?
+Example: what genes on chromosome 22 go from being in a "closed" compartment in monocytes to "open" in NK cells?
 
 ```R
 library(Homo.sapiens)
@@ -152,3 +152,5 @@ closedToOpen <- subsetByOverlaps(openNK, closedMono)
 openingGenes <- subsetByOverlaps(chr22genes, closedToOpen)
 export(openingGenes, "genes.closedInMono.openInNk.chr22.hg19.bed") 
 ```
+
+A more interesting example might try to add a confidence interval and further restrict the changes of interest to those that go from being "deeply" embedded in heterochromatin (closed) compartments to being broadly open euchromatin.
