@@ -29,7 +29,7 @@ library(FlowSorted.Blood.450k)
 
 The ```sesamize()``` function is relatively new and we cannot guarantee that it has passed continuous integration testing in Bioconductor-devel (for reasons too boring to discuss).  We will take advantage of BiocManager's wonderful GitHub integration to use the bleeding edge version of the package.
 ```R
-install("trichelab/sesame")
+install("zwdzwd/sesame")
 ```
 
 Predictably, there is a bit of a timing bug in assigning probe IDs in sesamize, so let's brute-force fix that:
