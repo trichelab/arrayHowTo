@@ -152,6 +152,6 @@ closedToOpen <- subsetByOverlaps(openNK, closedMono)
 openingGenes <- subsetByOverlaps(chr22genes, closedToOpen)
 export(openingGenes, "genes.closedInMono.openInNk.chr22.hg19.bed") 
 ```
-[!compartments.IGV.png]
+<img src="compartments.IGV.png">
 
 A more interesting example might try to add a confidence interval and further restrict the changes of interest to those that go from being "deeply" embedded in heterochromatin (closed) compartments to being broadly open euchromatin.
