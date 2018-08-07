@@ -130,6 +130,25 @@ export(comps.mono.chr22, "Monocytes.compartments.chr22.hg19.bw")
 export(comps.diffs, "NKvsMonocytes.compartmentDiffs.chr22.hg19.bw")
 ```
 
-If it's not obvious how to use this information, I can add another section here.
-(Or maybe the IDAT files for the TARGET AML NUP98-NSD1 vs. NUP98-KDM5A comparison)
+If it's not obvious how to use this information, I can add another section here.    
+(Or maybe the IDAT files for the TARGET AML NUP98-NSD1 vs. NUP98-KDM5A comparison)    
+One silly example: what genes on chromosome 22 go from being in a "closed" compartment in monocytes to "open" in NK cells?
 
+```R
+library(Homo.sapiens)
+chr22 <- GRanges("chr22", IRanges(start=1, end=seqlengths(Homo.sapiens)["chr22"]))
+
+# add friendly HUGO names 
+chr22genes <- subsetByOverlaps(genes(Homo.sapiens), chr22)
+chr22genes$name <- mapIds(Homo.sapiens, names(chr22genes), "SYMBOL", "ENTREZID")
+names(chr22genes) <- chr22genes$name
+
+# split compartments in each cell type: 
+closedMono <- split(comps.mono.chr22, comps.mono.chr22$compartment)$closed
+openNK <- split(comps.NK.chr22, comps.NK.chr22$compartment)$open
+
+# find their intersection to restrict our gene list
+closedToOpen <- subsetByOverlaps(openNK, closedMono)
+openingGenes <- subsetByOverlaps(chr22genes, closedToOpen)
+export(openingGenes, "genes.closedInMono.openInNk.chr22.hg19.bed") 
+```
