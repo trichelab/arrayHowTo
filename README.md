@@ -46,11 +46,83 @@ Now:
 ```R
 library(sesame)
 library(minfi) 
+
+# force the 450k manifests to be loaded
+# this may also be necessary for EPIC :-(
 library(IlluminaHumanMethylation450kmanifest)
 library(IlluminaHumanMethylation450kanno.ilmn12.hg19) 
 
+library(FlowSorted.Blood.450k) 
 data(FlowSorted.Blood.450k) 
-grSet <- sesamize(FlowSorted.Blood.450k) 
+
+# drop probes with > 10% missing values using naFrac
+grSet <- sesamize(FlowSorted.Blood.450k, naFrac=0.1) 
+```
+Sesamizing WB_105...
+# ...etc.
+
+Or if you're really impatient, like me:
+
+```R
+library(parallel) 
+options(mc.cores=detectCores())
+
+# drop probes with > 10% missing values, run > 10 IDATs at a time
+grSet <- sesamize(FlowSorted.Blood.450k, naFrac=0.1, parallel=TRUE) 
+```
+Sesamizing WB_105...
+Sesamizing WB_218...
+Sesamizing WB_261...
+Sesamizing PBMC_105...
+Sesamizing PBMC_218...
+Sesamizing PBMC_261...
+Sesamizing Gran_105...
+Sesamizing Gran_218...
+Sesamizing Gran_261...
+Sesamizing CD4+_105...
+#_ ...etc.
+
+Either way, you get back a GenomicRatioSet (```?GenomicRatioSet``` for more):
+
+```R
 show(grSet)
 ```
+
+Once you have a GenomicRatioSet you can feed it to Conumee, for example (much more on that topic in the conumee package vignette), or call DMRs with, say, DMRcate, or use ```compartments()``` to look at A/B compartment structure:
+
+```
+# CD14 is a cell surface marker on classical monocytes
+Monocytes <- grSet[, grep("CD14", colnames(grSet))] 
+
+# We drop the correlation matrix in this example (keep=FALSE)
+comps.mono.chr22 <- compartments(Monocytes, chr="chr22", keep=FALSE) 
+
+# CD56 is a cell surface marker on classical natural killer (NK) cells
+NKcells <- grSet[, grep("CD56", colnames(grSet))] 
+
+# We drop the correlation matrix in this example (keep=FALSE) too
+comps.NK.chr22 <- compartments(NKcells, chr="chr22", keep=FALSE)
+```
+
+This can take a while; once it's done, try poking around at the comps data structures, and see whether it's obvious how to dump this to a bigWig file using ```rtracklayer``` (and by extension whether differences of eigenvalues, in $pc, make sense).
+The compartments function returns a GenomicRanges object (```?GRanges``` for more information) which maps 1:1 onto a bigWig.
+
+```R
+show(comps.NK.chr22)
+
+# we do need to change some names, though!
+names(mcols(comps.mono.chr22))[1] <- "score"
+names(mcols(comps.NK.chr22))[1] <- "score"
+```
+
+Now we can dump the result and compare in, say, IGV (or you could split by compartment and run various tests in R):
+
+```R
+library(rtracklayer)
+export(comps.NK.chr22, "NKcells.compartments.chr22.hg19.bw")
+export(comps.NK.chr22, "Monocytes.compartments.chr22.hg19.bw")
+```
+
+If it's not obvious how to use this information, I can add another section here.
+(Or maybe the IDAT files for the TARGET AML NUP98-NSD1 vs. NUP98-KDM5A comparison)
 
